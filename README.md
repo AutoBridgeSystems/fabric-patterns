@@ -1,21 +1,25 @@
 # AutoBridge Fabric Patterns
 
-A curated collection of [Fabric](https://github.com/danielmiessler/fabric) AI patterns, synchronized with the upstream community repository.
+A curated collection of [Fabric](https://github.com/danielmiessler/fabric) AI patterns and strategies, synchronized with the upstream community repository.
 
 ## What is Fabric?
 
-Fabric is an open-source framework for augmenting humans using AI. Patterns are reusable prompt templates that solve specific tasks—summarization, analysis, code review, content extraction, and more.
+Fabric is an open-source framework for augmenting humans using AI. Patterns are reusable prompt templates that solve specific tasks—summarization, analysis, code review, content extraction, and more. Strategies are prompt engineering techniques (Chain of Thought, Tree of Thought, etc.) that enhance AI reasoning.
 
 ## Repository Structure
 
 ```
 fabric-patterns/
 ├── data/
-│   └── patterns/
-│       ├── summarize/          # Upstream community patterns
-│       ├── extract_wisdom/     # Upstream community patterns
-│       ├── abs_*/              # AutoBridge custom patterns (protected)
-│       └── autobridge_*/       # AutoBridge custom patterns (protected)
+│   ├── patterns/
+│   │   ├── summarize/          # Upstream community patterns
+│   │   ├── extract_wisdom/     # Upstream community patterns
+│   │   ├── abs_*/              # AutoBridge custom patterns (protected)
+│   │   └── autobridge_*/       # AutoBridge custom patterns (protected)
+│   └── strategies/
+│       ├── cot.json            # Chain of Thought
+│       ├── tot.json            # Tree of Thought
+│       └── ...                 # Other prompt strategies
 ├── scripts/
 │   └── sync-upstream.sh        # Upstream synchronization script
 ├── .upstream-tracking          # Tracks last synced upstream commit
@@ -24,12 +28,12 @@ fabric-patterns/
 
 ## Synchronization with Upstream
 
-This repo syncs patterns from [danielmiessler/fabric](https://github.com/danielmiessler/fabric) while preserving our custom patterns.
+This repo syncs patterns and strategies from [danielmiessler/fabric](https://github.com/danielmiessler/fabric) while preserving custom content.
 
 ### How It Works
 
-1. **Upstream patterns** are pulled from `danielmiessler/fabric/data/patterns/`
-2. **Custom patterns** (prefixed with `abs_` or `autobridge_`) are excluded from sync and never overwritten
+1. **Upstream content** is pulled from `danielmiessler/fabric/data/patterns/` and `data/strategies/`
+2. **Custom content** (prefixed with `abs_` or `autobridge_`) is excluded from sync and never overwritten
 3. The `.upstream-tracking` file records the last synced commit SHA
 
 ### Running a Sync
@@ -39,24 +43,24 @@ This repo syncs patterns from [danielmiessler/fabric](https://github.com/danielm
 ```
 
 This will:
-- Sparse-clone the upstream repo (only patterns, ~1MB)
-- Rsync patterns to `data/patterns/`, overwriting upstream ones
-- Preserve all `abs_*` and `autobridge_*` patterns
+- Sparse-clone the upstream repo (only patterns + strategies)
+- Rsync content to `data/`, overwriting upstream files
+- Preserve all `abs_*` and `autobridge_*` custom content
 - Update `.upstream-tracking` with the latest commit
 
 After syncing, review and commit:
 ```bash
 git status
 git diff
-git add data/patterns/ .upstream-tracking
-git commit -m "sync: upstream patterns $(cat .upstream-tracking | head -c 7)"
+git add data/ .upstream-tracking
+git commit -m "sync: upstream $(cat .upstream-tracking | head -c 7)"
 ```
 
 ### Conflict Strategy
 
-| Pattern Type | On Sync |
+| Content Type | On Sync |
 |--------------|---------|
-| Upstream (e.g., `summarize/`) | Overwritten with latest |
+| Upstream (e.g., `summarize/`, `cot.json`) | Overwritten with latest |
 | Custom (`abs_*/`, `autobridge_*/`) | Preserved, never touched |
 
 To modify an upstream pattern without losing changes on sync, copy it with your prefix:
@@ -93,11 +97,13 @@ cp -r data/patterns/summarize data/patterns/abs_summarize
 Point Fabric to this repository during setup:
 ```bash
 fabric --setup
-# When prompted for Git repository URL:
+# When prompted for Git repository URL (patterns):
+# https://github.com/AutoBridgeSystems/fabric-patterns.git
+# When prompted for Git repository URL (strategies):
 # https://github.com/AutoBridgeSystems/fabric-patterns.git
 ```
 
-Or update patterns manually:
+Or update content manually:
 ```bash
 fabric --updatepatterns
 ```
@@ -112,4 +118,5 @@ fabric -y "https://youtube.com/..." -p extract_wisdom
 
 - **Repository:** https://github.com/danielmiessler/fabric
 - **Patterns location:** `data/patterns/`
+- **Strategies location:** `data/strategies/`
 - **Current sync:** See `.upstream-tracking`
