@@ -10,11 +10,12 @@ Fabric is an open-source framework for augmenting humans using AI. Patterns are 
 
 ```
 fabric-patterns/
-├── patterns/
-│   ├── summarize/              # Upstream community patterns
-│   ├── extract_wisdom/         # Upstream community patterns
-│   ├── abs_*/                  # AutoBridge custom patterns (protected)
-│   └── autobridge_*/           # AutoBridge custom patterns (protected)
+├── data/
+│   └── patterns/
+│       ├── summarize/          # Upstream community patterns
+│       ├── extract_wisdom/     # Upstream community patterns
+│       ├── abs_*/              # AutoBridge custom patterns (protected)
+│       └── autobridge_*/       # AutoBridge custom patterns (protected)
 ├── scripts/
 │   └── sync-upstream.sh        # Upstream synchronization script
 ├── .upstream-tracking          # Tracks last synced upstream commit
@@ -39,7 +40,7 @@ This repo syncs patterns from [danielmiessler/fabric](https://github.com/danielm
 
 This will:
 - Sparse-clone the upstream repo (only patterns, ~1MB)
-- Rsync patterns to `patterns/`, overwriting upstream ones
+- Rsync patterns to `data/patterns/`, overwriting upstream ones
 - Preserve all `abs_*` and `autobridge_*` patterns
 - Update `.upstream-tracking` with the latest commit
 
@@ -47,7 +48,7 @@ After syncing, review and commit:
 ```bash
 git status
 git diff
-git add patterns/ .upstream-tracking
+git add data/patterns/ .upstream-tracking
 git commit -m "sync: upstream patterns $(cat .upstream-tracking | head -c 7)"
 ```
 
@@ -60,15 +61,15 @@ git commit -m "sync: upstream patterns $(cat .upstream-tracking | head -c 7)"
 
 To modify an upstream pattern without losing changes on sync, copy it with your prefix:
 ```bash
-cp -r patterns/summarize patterns/abs_summarize
-# Edit patterns/abs_summarize/system.md
+cp -r data/patterns/summarize data/patterns/abs_summarize
+# Edit data/patterns/abs_summarize/system.md
 ```
 
 ## Creating Custom Patterns
 
 1. Create a directory with your prefix:
    ```bash
-   mkdir patterns/abs_my_pattern
+   mkdir data/patterns/abs_my_pattern
    ```
 
 2. Add `system.md` (required):

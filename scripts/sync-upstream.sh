@@ -9,7 +9,7 @@ set -e
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 UPSTREAM_REPO="https://github.com/danielmiessler/fabric.git"
 TRACKING_FILE="$REPO_ROOT/.upstream-tracking"
-PATTERNS_DIR="$REPO_ROOT/patterns"
+PATTERNS_DIR="$REPO_ROOT/data/patterns"
 
 echo "=== Fabric Patterns Upstream Sync ==="
 echo ""
