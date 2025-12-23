@@ -1,6 +1,6 @@
 # AutoBridge Fabric Patterns
 
-A curated collection of [Fabric](https://github.com/danielmiessler/fabric) AI patterns and strategies, synchronized with the upstream community repository.
+A curated collection of [Fabric](https://github.com/danielmiessler/fabric) AI patterns and strategies, synchronized with the upstream community repository. Includes official Claude Code Skills integration.
 
 ## What is Fabric?
 
@@ -10,6 +10,10 @@ Fabric is an open-source framework for augmenting humans using AI. Patterns are 
 
 ```
 fabric-patterns/
+├── .claude/
+│   └── skills/
+│       └── fabric-patterns/
+│           └── SKILL.md        # Claude Code Skills integration
 ├── data/
 │   ├── patterns/
 │   │   ├── summarize/          # Upstream community patterns
@@ -25,6 +29,123 @@ fabric-patterns/
 ├── .upstream-tracking          # Tracks last synced upstream commit
 └── README.md
 ```
+
+## Claude Code Skills Integration (Recommended)
+
+This repository includes an official [Claude Code Skills](https://code.claude.com/docs/en/skills) integration. Skills are model-invoked—Claude automatically activates them based on your request.
+
+### How It Works
+
+```
+You: "Summarize this research paper"
+        │
+        ▼
+┌─────────────────────────────────────┐
+│ Claude reads skill descriptions     │
+│ → Matches "fabric-patterns" skill   │
+│ → Loads SKILL.md                    │
+│ → Reads data/patterns/summarize_paper/system.md
+│ → Applies pattern methodology       │
+└─────────────────────────────────────┘
+        │
+        ▼
+Structured summary using Fabric's format
+```
+
+### Installation
+
+**Option 1: Project-level (share with team via git)**
+```bash
+# Clone this repo into your project
+git clone https://github.com/AutoBridgeSystems/fabric-patterns.git
+
+# The .claude/skills/ directory is automatically discovered by Claude Code
+```
+
+**Option 2: Personal (available across all projects)**
+```bash
+# Clone to your personal skills directory
+git clone https://github.com/AutoBridgeSystems/fabric-patterns.git ~/.claude/skills/fabric-patterns
+```
+
+**Option 3: Symlink (recommended for development)**
+```bash
+# Clone once, symlink to skills
+git clone https://github.com/AutoBridgeSystems/fabric-patterns.git ~/fabric-patterns
+ln -s ~/fabric-patterns/.claude/skills/fabric-patterns ~/.claude/skills/fabric-patterns
+```
+
+### Usage
+
+Once installed, Claude automatically uses Fabric patterns when relevant. Just ask naturally:
+
+```bash
+# Claude will use extract_wisdom pattern
+"Extract the key insights from this document"
+
+# Claude will use summarize pattern
+"Give me a summary of this paper"
+
+# Claude will use review_code pattern
+"Review this code for issues"
+
+# Claude will use create_prd pattern
+"Create a PRD for this feature"
+```
+
+### Available Patterns
+
+| Category | Patterns | Use When |
+|----------|----------|----------|
+| **Summarize** | `summarize`, `summarize_paper`, `summarize_meeting`, `summarize_git_diff` | Condensing content |
+| **Analyze** | `analyze_claims`, `analyze_prose`, `analyze_logs`, `review_code` | Evaluating content |
+| **Extract** | `extract_wisdom`, `extract_ideas`, `extract_recommendations` | Pulling insights |
+| **Create** | `create_prd`, `create_user_story`, `write_pull-request` | Generating documents |
+| **Improve** | `improve_writing`, `improve_prompt`, `improve_academic_writing` | Enhancing content |
+
+Full list: `ls data/patterns/` (232 patterns)
+
+### Architecture: Progressive Disclosure
+
+Following [Anthropic's best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), this skill uses **progressive disclosure**:
+
+1. **SKILL.md** (~80 lines) - Small routing document loaded when skill activates
+2. **Pattern files** - Read on-demand only when needed
+3. **Zero context cost** - Unused patterns don't consume tokens
+
+This allows 232+ patterns without context bloat.
+
+---
+
+## Fabric CLI Usage (Alternative)
+
+You can also use these patterns with the standalone Fabric CLI tool.
+
+### Setup
+
+Point Fabric to this repository during setup:
+```bash
+fabric --setup
+# When prompted for Git repository URL (patterns):
+# https://github.com/AutoBridgeSystems/fabric-patterns.git
+# When prompted for Git repository URL (strategies):
+# https://github.com/AutoBridgeSystems/fabric-patterns.git
+```
+
+### Usage
+
+```bash
+# Summarize content
+echo "Your content" | fabric -p summarize
+
+# Extract wisdom from YouTube
+fabric -y "https://youtube.com/..." -p extract_wisdom
+
+# Chain patterns
+cat document.txt | fabric -p extract_ideas | fabric -p summarize
+```
+
+---
 
 ## Synchronization with Upstream
 
@@ -69,6 +190,8 @@ cp -r data/patterns/summarize data/patterns/abs_summarize
 # Edit data/patterns/abs_summarize/system.md
 ```
 
+---
+
 ## Creating Custom Patterns
 
 1. Create a directory with your prefix:
@@ -92,27 +215,9 @@ cp -r data/patterns/summarize data/patterns/abs_summarize
 
 3. Optionally add `user.md` for supplementary context.
 
-## Usage with Fabric CLI
+4. Update the SKILL.md if you want Claude Code to know about the new pattern.
 
-Point Fabric to this repository during setup:
-```bash
-fabric --setup
-# When prompted for Git repository URL (patterns):
-# https://github.com/AutoBridgeSystems/fabric-patterns.git
-# When prompted for Git repository URL (strategies):
-# https://github.com/AutoBridgeSystems/fabric-patterns.git
-```
-
-Or update content manually:
-```bash
-fabric --updatepatterns
-```
-
-Run a pattern:
-```bash
-echo "Your content" | fabric -p summarize
-fabric -y "https://youtube.com/..." -p extract_wisdom
-```
+---
 
 ## Upstream Source
 
@@ -120,3 +225,10 @@ fabric -y "https://youtube.com/..." -p extract_wisdom
 - **Patterns location:** `data/patterns/`
 - **Strategies location:** `data/strategies/`
 - **Current sync:** See `.upstream-tracking`
+
+## References
+
+- [Fabric GitHub](https://github.com/danielmiessler/fabric)
+- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
+- [Skill Authoring Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+- [Anthropic Skills Repository](https://github.com/anthropics/skills)
