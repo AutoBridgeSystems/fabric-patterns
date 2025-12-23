@@ -75,6 +75,11 @@ git clone https://github.com/AutoBridgeSystems/fabric-patterns.git ~/fabric-patt
 ln -s ~/fabric-patterns/.claude/skills/fabric-patterns ~/.claude/skills/fabric-patterns
 ```
 
+**After installation, restart Claude Code** for skills to be discovered. Verify with:
+```
+What skills are available?
+```
+
 ### Usage
 
 Once installed, Claude automatically uses Fabric patterns when relevant. Just ask naturally:
